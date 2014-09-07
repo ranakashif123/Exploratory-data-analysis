@@ -1,26 +1,25 @@
-## Coursera - Exploratory Data Analysis - Project 1 ##
+### Getting dataset
 
-# Our overall goal here is simply to examine how household energy usage
-# varies over a 2-day period in February, 2007. 
+data_1 <- read.csv("household_power_consumption.txt",sep=";",header=TRUE,stringsAsFactors=F, na.strings="?",comment.char="", quote='\"')
+head(data_1,n=3)
+data_1$Date <- as.Date(data_1$Date, format="%d/%m/%Y")
 
-##### PLOT 1 #######
+### Subsetting
+data <- subset(data_1, subset=(Date >= "2007-02-01" & Date <= "2007-02-02"))
+rm(data_1) #removing full dataset
 
-# setting working directory
-setwd("F:/Box Sync/Coursera/Exploratory_Data_Analysis")
+### Converting dates
 
-# Reading data file
-orig <- read.table("F:/Box Sync/Coursera/Exploratory_Data_Analysis/household_power_consumption.txt", header = T, sep = ";",
-                  na.strings="?", stringsAsFactors=FALSE)
-str(dat)
+datetime <- paste(as.Date(data$Date), data$Time)
+data$Datetime <- as.POSIXct(datetime)
 
-# I only want data between 2007-02-01 and 2007-02-02
-dat=subset(orig, dat$Date == "1/2/2007" | dat$Date == "2/2/2007")
+###Histogram
 
-# Converting Date and Time variables
-# dat$Time=strptime(dat$Time,"%H:%M:%S")
-# dat$Date=as.Date(dat$Date,format="%d/%m/%Y")
+hist(data$Global_active_power,main="Global Active Power",
+xlab="Global Active Power (kilowatts)",ylab="Frequency",
+col="red")
 
-# creating plot
-png("plot1.png", width=480, height=480, units="px")
-hist(dat$Global_active_power, main="Global Active Power", xlab="Global Active Power (kilowatts)", col="red")
+### Saving to png
+
+dev.copy(png, file="plot1.png", height=480, width=480)
 dev.off()
